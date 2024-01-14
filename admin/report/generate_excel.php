@@ -14,6 +14,7 @@ if (isset($_POST['excel'])) {
             FROM book_list b 
             INNER JOIN `packages` p ON p.id = b.package_id 
             INNER JOIN users u ON u.id = b.user_id 
+            WHERE b.schedule>= '$start_date' AND b.schedule<='$end_date' 
             ORDER BY DATE(b.date_created) DESC";
 
     $result = $conn->query($sql);

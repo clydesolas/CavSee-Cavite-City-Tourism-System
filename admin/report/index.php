@@ -91,7 +91,7 @@
                    
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="result-body">
                 <?php 
                 $i=1;
                     $qry = $conn->query("SELECT b.*,p.title,concat(u.firstname,' ',u.lastname) as name FROM book_list b inner join `packages` p on p.id = b.package_id inner join users u on u.id = b.user_id order by date(b.date_created) desc ");

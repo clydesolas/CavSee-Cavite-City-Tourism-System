@@ -16,32 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `backup_recovery_log`
---
-
-DROP TABLE IF EXISTS `backup_recovery_log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `backup_recovery_log` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `br_name` varchar(200) NOT NULL,
-  `date_added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `activity` varchar(500) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `backup_recovery_log`
---
-
-LOCK TABLES `backup_recovery_log` WRITE;
-/*!40000 ALTER TABLE `backup_recovery_log` DISABLE KEYS */;
-INSERT INTO `backup_recovery_log` VALUES (49,'test','2024-01-14 18:47:38','Back up '),(50,'backup_2024-01-14_19-54-28.zip','2024-01-14 19:54:28','Back up '),(51,'backup_2024-01-14_19-58-18.zip','2024-01-14 19:58:18','Back up '),(52,'backup_2024-01-14_19-58-34.zip','2024-01-14 19:58:34','Back up '),(53,'backup_2024-01-14_19-58-41.zip','2024-01-14 19:58:41','Back up '),(54,'backup_2024-01-14_19-58-59.zip','2024-01-14 19:58:59','Back up '),(55,'backup_2024-01-14_20-05-34.zip','2024-01-14 20:05:34','Back up '),(56,'backup_2024-01-14_20-05-47.zip','2024-01-14 20:05:47','Back up '),(57,'backup_2024-01-14_20-06-26.zip','2024-01-14 20:06:26','Back up ');
-/*!40000 ALTER TABLE `backup_recovery_log` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `book_list`
 --
 
@@ -228,4 +202,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-01-14 20:07:25
+-- Dump completed on 2024-01-14 21:23:42

@@ -8,6 +8,7 @@ $host = $db->getHost();
 $database = $db->getDatabase();
 $password  = $db->getPassword();
 
+
 function addFolderToZip($folder, $zip, $base = '') {
     $handle = opendir($folder);
 
@@ -18,7 +19,9 @@ function addFolderToZip($folder, $zip, $base = '') {
 
             if (is_file($path)) {
                 // Encrypt each file individually
+              
                 $zip->addFile($path, $localPath);
+               
             } elseif (is_dir($path)) {
                 $zip->addEmptyDir($localPath);
                 addFolderToZip($path, $zip, $localPath . '/');
@@ -26,9 +29,7 @@ function addFolderToZip($folder, $zip, $base = '') {
         }
     }
 }
-
 set_time_limit(500);
-
 // Configuration
 $backupFolder = 'backup_restore/backup/';
 $exportFolder = 'backup_restore/';
@@ -38,22 +39,16 @@ $zipPassword = 'sdg;tr45r43gverg54w6356.j.kjk/ikg34cwr23@@css32@r';
 
 // Create backup folder if not exists
 if (!file_exists($backupFolder)) {
-    if (!mkdir($backupFolder, 0755, true)) {
-        header('Content-Type: application/json');
-        echo json_encode(['error' => 'Unable to create backup folder']);
-        exit;
-    }
+    mkdir($backupFolder, 0755, true);
 }
 
 // Export MySQL database
 $exportFile = $exportFolder . 'database_backup.sql';
-$command = "$mysqldump -u$username -p$password $database > $exportFile";
+$command = "mysqldump -uu578342230_cavsee -pcvsuImus1 $database --ignore-table=$database.backup_recovery_log > $exportFile";
 system($command, $return);
 
-$br_name = '';
-$conditionMet = false;
-
 if ($return === 0) {
+    $conditionMet=true;
     // Create a zip archive
     $zip = new ZipArchive();
     $br_name = 'backup_' . date('Y-m-d_H-i-s') . '.zip';
@@ -69,38 +64,26 @@ if ($return === 0) {
             $folder = rtrim($folder, '/') . '/'; 
             addFolderToZip($folder, $zip, $folder);
         }
-
+       
         $zip->close();
-        $conditionMet = true;
-    } else {
-        header('Content-Type: application/json');
-        echo json_encode(['error' => 'Unable to open zip archive']);
-        exit;
     }
 
     unlink($exportFile);
 
     $date_added = date('Y-m-d H:i:s');
 
+
     $activity = 'Back up ';
     $insertQuery2 = "INSERT into backup_recovery_log (br_name, activity) VALUES (?, ?)";
     $stmt2 = mysqli_prepare($db->conn, $insertQuery2);
-
-    if ($stmt2) {
-        mysqli_stmt_bind_param($stmt2, "ss", $br_name, $activity);
-        mysqli_stmt_execute($stmt2);
-        mysqli_stmt_close($stmt2);
-    } else {
-        header('Content-Type: application/json');
-        echo json_encode(['error' => 'Database statement preparation failed']);
-        exit;
-    }
+    mysqli_stmt_bind_param($stmt2, "ss", $br_name, $activity);
+    mysqli_stmt_execute($stmt2);
+    mysqli_stmt_close($stmt2);
 } else {
-    header('Content-Type: application/json');
-    echo json_encode(['error' => 'MySQL dump command failed'.$command]);
-    exit;
+    $conditionMet=false;
 }
 
+// Send a JSON response
 header('Content-Type: application/json');
 echo json_encode(['conditionMet' => $conditionMet, 'br_name' => $br_name]);
 ?>

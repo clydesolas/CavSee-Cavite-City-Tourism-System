@@ -86,7 +86,7 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="result-body">
                 <?php 
                 $i=1;
                     $qry = $conn->query("SELECT r.*,concat(u.firstname,' ',u.lastname) as name, p.title FROM `rate_review` r, `users` u, `packages` p WHERE u.id = r.user_id AND p.id = r.package_id order by r.date_created desc; ");
@@ -154,7 +154,7 @@
             };
 
             // Send the request to the server
-            xhr.open("GET", "report_fetch.php?start_date=" + startDate + "&end_date=" + endDate, true);
+            xhr.open("GET", "report_fetch_review.php?start_date=" + startDate + "&end_date=" + endDate, true);
             xhr.send();
         }
     }
