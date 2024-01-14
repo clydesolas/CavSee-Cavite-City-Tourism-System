@@ -16,7 +16,7 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Booked ID</th>
+                    <th>ID</th>
                     <th>DateTime</th>
                     <th>Package</th>
                     <th>Schedule</th>

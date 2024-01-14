@@ -22,10 +22,13 @@ if(isset($_GET['id'])){
                 </button>
             </div>
 <div class="py-4">
+<p><b>ID:</b> <?php echo $book_list_id ?></p>
 
 <p><b>Package:</b> <?php echo $title ?></p>
 <p><b>User:</b> <?php echo $name ?></span></p>
 <p><b>Schedule:</b> <?php echo date("F d, Y",strtotime($schedule)) ?></p>
+<p><b>Remark:</b> <?php echo $remark ?></span></p>
+
 <form action="" id="book-status">
     <input type="hidden" name="id" value="<?php echo $id ?>">
     <input type="hidden" name="user_id" value="<?php echo $user_id ?>">

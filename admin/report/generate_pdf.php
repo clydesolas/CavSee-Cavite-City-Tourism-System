@@ -56,8 +56,8 @@ if (isset($_POST['pdf'])) {
 
         // Page content
         public function generateBookListTable($result) {
-            $html = '<table border="1" style="width:100%;">';
-            $html .= '<thead><tr style = "font-weight:bold"><th style="width:35px; ">No.</th><th>Date Created</th><th style="width:135px">User Name</th><th>Book Title</th><th>Schedule</th><th style="width:100px">Status</th></tr></thead>';
+            $html = '<table border="1" style="width:93%;">';
+            $html .= '<thead><tr style = "font-weight:bold"><th style="width:35px; ">No.</th><th>ID</th><th>Date Created</th><th style="width:135px">User Name</th><th>Book Title</th><th>Schedule</th><th style="width:100px">Status</th></tr></thead>';
             $html .= '<tbody>';
 
             $i = 0;
@@ -66,11 +66,13 @@ if (isset($_POST['pdf'])) {
                 $date_created = date("M j, Y h:ia" , strtotime($row_data['date_created']));
                 $user_name = $row_data['name'];
                 $book_title = $row_data['title'];
+                $book_list_id = $row_data['book_list_id'];
                 $schedule = date("M j, Y", strtotime($row_data['schedule']));
                 $status = getStatusLabel($row_data['status']);
 
                 $html .= '<tr>';
                 $html .= '<td style="width:35px; text-align:center">' . $i . '</td>';
+                $html .= '<td>' . $book_list_id . '</td>';
                 $html .= '<td>' . $date_created . '</td>';
                 $html .= '<td style="width:135px">' . $user_name . '</td>';
                 $html .= '<td>' . $book_title . '</td>';

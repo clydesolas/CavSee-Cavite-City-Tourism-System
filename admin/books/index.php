@@ -14,17 +14,12 @@
         <div class="container-fluid">
         <table class="table table-stripped text-dark">
             <colgroup>
-                <col width="5%">
-                <col width="10">
-                <col width="15">
-                <col width="25">
-                <col width="20">
-                <col width="5">
-                <col width="5">
+              
             </colgroup>
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>ID</th>
                     <th>DateTime</th>
                     <th>User</th>
                     <th>Package</th>
@@ -41,6 +36,7 @@
                 ?>
                     <tr>
                         <td><?php echo $i++ ?></td>
+                        <td><?php echo $row['book_list_id'] ?></td>
                         <td><?php echo date("Y-m-d H:i",strtotime($row['date_created'])) ?></td>
                         <td><?php echo $row['name'] ?></td>
                         <td><?php echo $row['title'] ?></td>

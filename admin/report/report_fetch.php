@@ -14,6 +14,7 @@ $i=1;
 ?>
     <tr>
         <td><?php echo $i++ ?></td>
+        <td><?php echo $row['book_list_id'] ?></td>
         <td><?php echo date("M j, Y h:ia",strtotime($row['date_created'])) ?></td>
         <td><?php echo $row['name'] ?></td>
         <td><?php echo $row['title'] ?></td>

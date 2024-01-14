@@ -24,7 +24,7 @@ if (isset($_POST['excel'])) {
     $sheet = $spreadsheet->getActiveSheet();
 
     // Add column headers
-    $columnHeaders = ['No.', 'Date Created', 'User Name', 'Book Title', 'Schedule', 'Status'];
+    $columnHeaders = ['No.', 'ID','Date Created', 'User Name', 'Book Title', 'Schedule', 'Status'];
     $sheet->fromArray($columnHeaders, NULL, 'A1');
     $headerStyle = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . '1');
     $headerStyle->getFont()->setBold(true);
@@ -38,15 +38,19 @@ if (isset($_POST['excel'])) {
         $date_created = date("M j, Y h:ia", strtotime($row_data['date_created']));
         $user_name = $row_data['name'];
         $book_title = $row_data['title'];
+        $remark = $row_data['remark'];
+        $book_list_id = $row_data['book_list_id'];
         $schedule = date("M j, Y", strtotime($row_data['schedule']));
         $status = getStatusLabel($row_data['status']); // Assuming you have a function to get status label
 
         $sheet->setCellValue('A' . $row, $i);
-        $sheet->setCellValue('B' . $row, $date_created);
-        $sheet->setCellValue('C' . $row, $user_name);
-        $sheet->setCellValue('D' . $row, $book_title);
-        $sheet->setCellValue('E' . $row, $schedule);
-        $sheet->setCellValue('F' . $row, $status);
+        $sheet->setCellValue('B' . $row, $book_list_id);
+        $sheet->setCellValue('C' . $row, $date_created);
+        $sheet->setCellValue('D' . $row, $user_name);
+        $sheet->setCellValue('E' . $row, $book_title);
+        $sheet->setCellValue('F' . $row, $schedule);
+        $sheet->setCellValue('G' . $row, $status);
+        $sheet->setCellValue('H' . $row, $remark);
 
         $row++;
     }
