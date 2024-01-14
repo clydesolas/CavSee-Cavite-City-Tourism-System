@@ -154,7 +154,7 @@
             };
 
             // Send the request to the server
-            xhr.open("GET", "report_fetch_review.php?start_date=" + startDate + "&end_date=" + endDate, true);
+            xhr.open("GET", "report/report_fetch_review.php?start_date=" + startDate + "&end_date=" + endDate, true);
             xhr.send();
         }
     }

@@ -1,18 +1,13 @@
 <?php
-require_once 'session.php';
-
-if ($connection->connect_error) {
-    die("Connection failed: " . $connection->connect_error);
-}
-
+require_once '../../config.php';
 // Retrieve start and end dates from the AJAX request
 $start_date = date('Y-m-d', strtotime($_GET['start_date']));
-$end_date = date('Y-m-d 23:59:59', strtotime($_GET['end_date']));
+$end_date = date('Y-m-d', strtotime($_GET['end_date']));
 
 $i=1;
     $qry = $conn->query("SELECT r.*,concat(u.firstname,' ',u.lastname) as name, p.title
      FROM `rate_review` r, `users` u, `packages` p 
-     WHERE u.id = r.user_id AND p.id = r.package_id AND date(r.date_created) >= '$start_date' AND date(r.date_created) <= '$end_date' order by r.date_created desc; ");
+     WHERE u.id = r.user_id AND p.id = r.package_id AND date(r.date_created) >= '$start_date' AND date(r.date_created) <= '$end_date' order by r.date_created asc; ");
     while($row= $qry->fetch_assoc()):
         $row['review'] = strip_tags(stripslashes(html_entity_decode($row['review'])));
 ?>
@@ -36,7 +31,3 @@ $i=1;
         </td>
     </tr>
 <?php endwhile; ?>
-<?php
-$connection->close();
-
-?>

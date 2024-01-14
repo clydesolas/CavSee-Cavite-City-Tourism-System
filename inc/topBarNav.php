@@ -1,6 +1,6 @@
-
-    <?php
-$bookingCountQuery = "SELECT COUNT(*) as count FROM book_list WHERE status IN (0, 1) AND user_id = '".$_settings->userdata('id')."'";
+<?php
+ $idd = $_settings->userdata('id');
+$bookingCountQuery = "SELECT COUNT(*) as count FROM book_list WHERE status IN (0, 1) AND user_id = '$idd'";
 $bookingCountResult = $conn->query($bookingCountQuery);
 
 $bookingCount = 0;
@@ -8,7 +8,7 @@ $bookingCount = 0;
 if ($row = $bookingCountResult->fetch_assoc()) {
     $bookingCount = $row['count'];
 }
-    ?>
+?>
     <div id="fh5co-wrapper">
 		<div id="fh5co-page">
 		<div id="fh5co-header" style="z-index: 2 !important;">

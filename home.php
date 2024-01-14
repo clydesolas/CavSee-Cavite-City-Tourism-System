@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" class="" style="height: auto;">
 <?php 
-
-require_once('config.php'); 
+require_once 'config.php';
 
 if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] == 'admin') {
- echo header ("location: admin/index.php"); 
+ header ("location: admin/index.php"); 
  } 
- if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] !== 'admin') {
- echo header ("location: home.php"); 
-  } 
-if (!isset($_SESSION['userdata'])) {
-  echo header ("location: index.php"); 
+//  if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] == 'user') {
+//  header ("location: home.php"); 
+//   } 
+if (!isset($_SESSION['userdata']['role'])) {
+    // session_destroy();
+  header ("location: index.php"); 
   }
 
 ?>

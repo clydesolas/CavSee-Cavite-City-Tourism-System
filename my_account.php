@@ -12,21 +12,16 @@
         </div>
     </div><br>
         <table class="table table-stripped text-dark">
-            <colgroup>
-                <col width="5%">
-                <col width="10">
-                <col width="25">
-                <col width="25">
-                <col width="15">
-                <col width="10">
-            </colgroup>
+
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Booked ID</th>
                     <th>DateTime</th>
                     <th>Package</th>
                     <th>Schedule</th>
                     <th>Status</th>
+                    <th>Remark</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -55,6 +50,7 @@
                             <?php endif; ?>
                         <?php echo $i++ ?>
                     </td>
+                        <td><?php echo $row['book_list_id'] ?></td>
                         <td><?php echo date("Y-m-d H:i",strtotime($row['date_created'])) ?></td>
                         <td><?php echo $row['title'] ?></td>
                         <td><?php echo date("Y-m-d",strtotime($row['schedule'])) ?></td>
@@ -72,78 +68,128 @@
                             <?php endif; ?>
                            
                         </td>
+                        <td><?php echo $row['remark'];?></td>
                         <td align="center">
-                        <?php if ($row['status'] == 3 && $review_button_available <=0 ): ?>
-                        <button type="button" class="btn btn-flat btn-default border btn-sm" data-toggle="modal" data-target="#reviewModal">
-                            <a class="dropdown-item edit_data" style="color: white; background-color: black; border-color: black" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>">Review</a>
-<!--                          
-                                <a class="submit_review" href="javascript:void(0)" data-id="<?php echo $row['package_id'] ?>">Submit Review</a> -->
+                        <?php if ($row['status'] == 3 and $review_button_available === 0): ?>
+                        <button type="button" class="btn btn-dark border btn-sm" data-toggle="modal" data-target="#reviewModal<?php echo $row['bid'] ?>">
+                            <a class="text-decoration-none edit_data" href="javascript:void(0)" data-id="<?php echo $row['bid'] ?>">Review</a>
+                       </button>   
                             <?php endif; ?>
+                        <?php if ($row['status'] == 0): ?>
+                        <button type="button" class="btn btn-danger border btn-sm" data-toggle="modal" data-target="#cancel<?php echo $row['bid'] ?>">
+                            <a class="text-decoration-none edit_data" href="javascript:void(0)" data-id="cancel<?php echo $row['bid'] ?>">Cancel</a>
                         </button>
+                        <?php endif; ?>
                     </td>
                     </tr>
-                    <div class="modal fade" id="reviewModal" tabindex="1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reviewModalLabel">Review Form</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="reviewForm">
-
-                <!-- <input type="hidden" name="user_id" value="<?php  echo $_settings->userdata('id') ?>"> -->
-                <input type="hidden" name="package_id" value="<?php echo $row['package_id'] ?>">
-                <input type="hidden" name="book_list_id" value="<?php echo $row['bid'] ?>">
-                <div class="form-group2 mx-4">
-                        <label for="rating"class="control-label">Rating:</label>
-                        <!-- Add an input field for the rating with a name attribute -->
-                        <input type="hidden" id="rating" name="rate" value="0">
-                        <div id="rateYo"></div>
+                    <div class="modal fade" id="reviewModal<?php echo $row['bid'] ?>" tabindex="1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="reviewModalLabel">Review <?php echo $row['bid'] ?></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="reviewForm<?php echo $row['bid'] ?>">
+                                <h1><?php echo $row['schedule'] ?></h1>
+                                <!-- <input type="hidden" name="user_id" value=""> -->
+                                <input type="hidden" name="package_id" value="<?php echo $row['package_id'] ?>">
+                                <input type="hidden" name="book_list_id" value="<?php echo $row['bid'] ?>">
+                                <div class="form-group2 mx-4">
+                                        <label for="rating"class="control-label">Rating:</label>
+                                        <!-- Add an input field for the rating with a name attribute -->
+                                        <input type="hidden" id="rating<?php echo $row['bid'] ?>" required name="rate" value="0">
+                                        <div id="rateYo<?php echo $row['bid'] ?>"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group2 mx-4">
+                                    <label for="review" class="control-label">Feedback: </label>
+                                    <textarea name="review" id="review" cols="30" rows="10" required class="summernote"></textarea>
+                                </div>
+                                
+                                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group2 mx-4">
-                    <label for="review" class="control-label">Feedback: </label>
-                    <textarea name="review" id="review" cols="30" rows="10" class="summernote"></textarea>
-                </div>
-                  
-                    <button type="submit" class="btn btn-primary">Submit Review</button>
-                </form>
-            </div>
-        </div>
-    </div>
 
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-    </div>
-</section>
 
-</div>
-<!-- Add this in the head section of your HTML -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css" />
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+                    <div class="modal fade" id="cancel<?php echo $row['bid'] ?>" tabindex="1" role="dialog" aria-labelledby="cancelModal" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cancelModal">Cancel Book ID: <?php echo $row['bid'] ?><?php echo $row['book_list_id'] ?></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="cancelForm<?php echo $row['bid'] ?>">
+                                    <div class="d-flex text-center">
+                                    <input type="hidden" name="status" value="<?php echo $row['status'] ?>">
+                                    <input type="hidden" name="id" value="<?php echo $row['bid'] ?>">
 
-<script>
-    
-    $(function () {
-        $("#rateYo").rateYo({
+                                    <h3 class="">Are sure you want to cancel this booking?</h3>
+                                    </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                        <button type="submit" class="btn btn-primary">Yes</button>
+                                        </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+  <script>
+
+
+$('#cancelForm<?php echo $row['bid'] ?>').submit(function(e){
+    e.preventDefault(); // Prevent the default form submission behavior
+    start_loader();
+    $.ajax({
+        url: _base_url_ + "classes/Master.php?f=cancel_book",
+        method: "POST",
+        data: {id: <?php echo $row['bid'] ?>, status: 2},
+        dataType: "json",
+        error: err => {
+            console.log(err);
+            alert_toast("An error occurred", 'error');
+            end_loader();
+        },
+        success: function(resp) {
+            if (typeof resp == 'object' && resp.status == 'success') {
+                alert_toast("Book cancelled successfully", 'success');
+                setTimeout(function() {
+                    end_loader();
+                    $('#reviewModal<?php echo $row['bid'] ?>').modal('hide'); // Close the modal
+                    console.log('Before reload');
+                    location.reload(); // Reload the page
+                }, 1500);
+            } else {
+                console.log(resp);
+                alert_toast("An error occurred", 'error');
+            }
+            end_loader();
+        }
+    });
+});
+
+$(function () {
+        $("#rateYo<?php echo $row['bid'] ?>").rateYo({
             rating: 0, // initial rating
             starWidth: "30px", // width of each star
             normalFill: "#A0A0A0", // color of inactive stars
             ratedFill: "#FFD700", // color of active stars
             onSet: function (rating, rateYoInstance) {
-                $("#rating").val(rating);
+                $("#rating<?php echo $row['bid'] ?>").val(rating);
                 console.log("Rated: " + rating);
             }
         });
     });
 
     $(function(){
-        $('#reviewForm').submit(function(e){
+        $('#reviewForm<?php echo $row['bid'] ?>').submit(function(e){
             e.preventDefault();
             start_loader()
             $.ajax({
@@ -159,8 +205,11 @@
                 success:function(resp){
                     if(typeof resp == 'object' && resp.status == 'success'){
                         alert_toast("Rate and Review Successfully submitted.")
-                        setTimeout(() => {
-                            end_loader()
+                        setTimeout(function() {
+                            end_loader();
+                            $('#reviewModal<?php echo $row['bid'] ?>').modal('hide'); // Close the modal
+                            console.log('Before reload');
+                            location.reload(); // Reload the page
                         }, 1500);
                     }else{
                         console.log(resp)
@@ -184,42 +233,22 @@
 		        ]
 		    })
     })
+</script>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
+</section>
 
+</div>
+<!-- Add this in the head section of your HTML -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
 
+<script>
+                 
+    
+    
 
-    function cancel_book($id){
-        start_loader()
-        $.ajax({
-            url:_base_url_+"classes/Master.php?f=update_book_status",
-            method:"POST",
-            data:{id:$id,status:2},
-            dataType:"json",
-            error:err=>{
-                console.log(err)
-                alert_toast("an error occured",'error')
-                end_loader()
-            },
-            success:function(resp){
-                if(typeof resp == 'object' && resp.status == 'success'){
-                    alert_toast("Book cancelled successfully",'success')
-                    setTimeout(function(){
-                        location.reload()
-                    },2000)
-                }else{
-                    console.log(resp)
-                    alert_toast("an error occured",'error')
-                }
-                end_loader()
-            }
-        })
-    }
-    $(function(){
-        $('.cancel_data').click(function(){
-            _conf("Are you sure to cancel this booking?","cancel_book",[$(this).data('id')])
-        })
-        $('.submit_review').click(function(){
-            uni_modal("Rate & Feedback","./rate_review.php?id="+$(this).data('id'),'mid-large')
-        })
-        $('table').dataTable();
-    })
 </script>

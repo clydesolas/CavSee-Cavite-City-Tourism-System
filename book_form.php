@@ -1,6 +1,6 @@
 <div class="container">
     <form action="" id="book-form">
-       
+        <?php date_default_timezone_set('Asia/Manila'); ?>
             <input name="package_id" type="hidden" value="<?php echo $_GET['package_id'] ?>" >
             <input type="date" min = "<?php  echo date("Y-m-d"); ?>" class='form form-control p-2' required   name='schedule'>
         

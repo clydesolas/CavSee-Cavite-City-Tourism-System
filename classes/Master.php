@@ -104,10 +104,29 @@ Class Master extends DBConnection {
 	}
 	function book_tour(){
 		extract($_POST);
-		$data = " user_id = '".$this->settings->userdata('id')."' ";
-		foreach($_POST as $k =>$v){
+
+		function generateschedule_id() {
+			$currentYear = date("Y");
+			$lastTwoDigits = substr($currentYear, -2); // Get the last two digits
+			$characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		
+			$schedule_id = $lastTwoDigits;
+		
+			for ($i = 0; $i < 6; $i++) {
+				$schedule_id .= $characters[rand(0, strlen($characters) - 1)];
+			}
+		
+			return $schedule_id;
+		}
+		
+		$schedule_id = 'CV'.generateschedule_id();
+	 
+		$data = " user_id = '" . $this->settings->userdata('id') . "', book_list_id = '$schedule_id' ";
+		foreach ($_POST as $k => $v) {
 			$data .= ", `{$k}` = '{$v}' ";
 		}
+
+		
 		$mail = new PHPMailer(true);
 		$qry = $this->conn->query("SELECT * from `users` where role = 'admin' ");
 		while($row = $qry->fetch_assoc()){
@@ -145,6 +164,20 @@ Class Master extends DBConnection {
 		}
 		return json_encode($resp);
 	}
+
+	function cancel_book(){
+		extract($_POST);
+		$update = $this->conn->query("UPDATE `book_list` set `status` = '{$_POST['status']}' where id ='{$_POST['id']}' ");
+		if($update){
+			$resp['status'] = 'success';
+			$this->settings->set_flashdata('success',"Book has been cancelled.");
+		}else{
+			$resp['status'] = 'failed';
+			$resp['error'] = $this->conn->error;
+		}
+			return json_encode($resp);
+	}
+
 	function update_book_status(){
 		extract($_POST);
 
@@ -393,6 +426,9 @@ switch ($action) {
 	break;
 	case 'update_account':
 		echo $Master->update_account();
+	break;
+	case 'cancel_book':
+		echo $Master->cancel_book();
 	break;
 	case 'save_inquiry':
 		echo $Master->save_inquiry();

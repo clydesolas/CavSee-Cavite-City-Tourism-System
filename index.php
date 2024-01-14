@@ -1,14 +1,23 @@
 <?php 
 
 require_once('config.php'); 
+$query1 = "SET time_zone = '+08:00'";
+$conn->query($query1);
+// Query to update bookings with status 1 (Confirmed) and passed schedule
+$updateConfirmedQuery = "UPDATE `book_list` SET status = 3 WHERE status = 1 AND schedule < CURDATE()";
+$conn->query($updateConfirmedQuery);
+// Query to update bookings with status 0 (Pending) and passed schedule
+$updateQuery = "UPDATE `book_list` SET status = 2, remark = 'Booking declined' WHERE status = 0 AND schedule < CURDATE()";
+$conn->query($updateQuery);
 
-if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] == 'admin') {
- header ("location: admin/index.php"); 
- var_dump($_SESSION['userdata']['role']);
- }
- if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] !== 'admin') {
-  header ("location: home.php"); 
-  }
+
+// if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] == 'admin') {
+//  header ("location: admin/index.php"); 
+//  var_dump($_SESSION['userdata']['role']);
+//  }
+//  if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] !== 'admin') {
+//   header ("location: home.php"); 
+//   }
 //   var_dump($_SESSION['userdata']['role']);
 ?>
 
@@ -36,7 +45,7 @@ if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] == 'a
           <input type="password" id="password" placeholder="Password" name="password" value=""  required>
         </div>
           
-        <input class="btn" type="submit" name="submit" value="Sign in" href="destination.html">
+        <input class="btn" type="submit" name="submit" value="Sign in">
         <a href="register.php">Create  an account?</a>
       </div>
 

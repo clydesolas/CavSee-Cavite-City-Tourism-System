@@ -1,20 +1,15 @@
 <?php
-require_once 'session.php';
-
-if ($connection->connect_error) {
-    die("Connection failed: " . $connection->connect_error);
-}
-
+require_once '../../config.php';
 // Retrieve start and end dates from the AJAX request
 $start_date = date('Y-m-d', strtotime($_GET['start_date']));
-$end_date = date('Y-m-d 23:59:59', strtotime($_GET['end_date']));
+$end_date = date('Y-m-d', strtotime($_GET['end_date']));
 
 $i=1;
     $qry = $conn->query("SELECT b.*,p.title,concat(u.firstname,' ',u.lastname) as name 
     FROM book_list b inner join `packages` p on p.id = b.package_id 
     inner join users u on u.id = b.user_id
     where b.schedule>= '$start_date' AND b.schedule<='$end_date'  
-    order by date(b.date_created) desc ");
+    order by date(b.date_created) asc ");
     while($row= $qry->fetch_assoc()):
 ?>
     <tr>
@@ -38,7 +33,3 @@ $i=1;
     </tr>
 <?php endwhile; ?>
 
-<?php
-$connection->close();
-
-?>
