@@ -57,7 +57,7 @@ if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] == 'a
                     <input type="password" class="form-control form-control-sm form" min="8" name="password" required>
                 </div>
                 <div class="form-group d-flex justify-content-end mb-0 pb-0">
-                    <button class="btn btn-primary btn-flat" type="submit" name="submit"  style= "background-color: #212529; border: solid black;">Register</button>
+                    <button class="btn btn-primary btn-flat" id="submitreg" type="submit" name="submit"  style= "background-color: #212529; border: solid black;">Register</button>
                 </div>
                 <div class="text-center pt-0 mt-0 pb-3">
                 <a class="text-dark" href="index.php">Go to login page</a>
@@ -211,6 +211,7 @@ if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] == 'a
     $('#otpInput').on('input', function () {
     compareValues();
 });
+$('#submitreg').prop('disabled', true);
 
 function compareValues() {
     var value1 = $('#otp').val();
@@ -222,12 +223,16 @@ function compareValues() {
         $('#msg2').css('display', 'inline-block');
         $('#msg2').css('color', 'green');
         $('#msg2').text(' (Verified)');
+        $('#submitreg').prop('disabled', false);
+
     } else {
         console.log('Values are not equal');
         $('#otpInput').css('border', '3px solid red');
         $('#msg2').css('display', 'inline-block');
         $('#msg2').css('color', 'red');
         $('#msg2').text(' (Incorrect)');
+        $('#submitreg').prop('disabled', true);
+        
     }
 }
 
