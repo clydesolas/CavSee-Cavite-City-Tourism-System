@@ -217,14 +217,18 @@ function compareValues() {
     var value1 = $('#otp').val();
     var value2 = $('#otpInput').val();
 
-    if (value1 === value2) {
+    if (value2 === "") {
+        // Handle the case when the OTP input is empty
+        $('#otpInput').css('border', ''); // Reset border style
+        $('#msg2').css('display', 'none'); // Hide the message
+        $('#submitreg').prop('disabled', true);
+    } else if (value1 === value2) {
         console.log('Values are equal');
         $('#otpInput').css('border', '3px solid green');
         $('#msg2').css('display', 'inline-block');
         $('#msg2').css('color', 'green');
         $('#msg2').text(' (Verified)');
         $('#submitreg').prop('disabled', false);
-
     } else {
         console.log('Values are not equal');
         $('#otpInput').css('border', '3px solid red');
@@ -232,7 +236,6 @@ function compareValues() {
         $('#msg2').css('color', 'red');
         $('#msg2').text(' (Incorrect)');
         $('#submitreg').prop('disabled', true);
-        
     }
 }
 
