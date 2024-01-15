@@ -208,9 +208,10 @@ if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] == 'a
             
         });
     });
-    $('#otpInput').on('input', function () {
+$('#otpInput').on('input', function () {
     compareValues();
 });
+
 $('#submitreg').prop('disabled', true);
 
 function compareValues() {
@@ -238,6 +239,7 @@ function compareValues() {
         $('#submitreg').prop('disabled', true);
     }
 }
+
 
 </script>
 </html>

@@ -11,13 +11,13 @@ $updateQuery = "UPDATE `book_list` SET status = 2, remark = 'Booking declined' W
 $conn->query($updateQuery);
 
 
-// if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] == 'admin') {
-//  header ("location: admin/index.php"); 
+if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] == 'admin') {
+ header ("location: admin/index.php"); 
 //  var_dump($_SESSION['userdata']['role']);
-//  }
-//  if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] !== 'admin') {
-//   header ("location: home.php"); 
-//   }
+ }
+ if (isset($_SESSION['userdata']['role']) &&  $_SESSION['userdata']['role'] !== 'admin') {
+  header ("location: home.php"); 
+  }
 //   var_dump($_SESSION['userdata']['role']);
 ?>
 
@@ -110,7 +110,7 @@ $conn->query($updateQuery);
                     if(typeof resp == 'object' && resp.status == 'success'){
                         alert_toast("Login Successfully",'success')
                         setTimeout(function(){
-                          window.location.href = "home.php";
+                          location.reload()
                         },2000)
                     }else if(resp.status == 'incorrect'){
                         var _err_el = $('<div>')
