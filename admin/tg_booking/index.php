@@ -22,7 +22,6 @@
                     <th>ID</th>
                     <th>DateTime</th>
                     <th>User</th>
-                    <th>Head Count</th>
                     <th>Package</th>
                     <th>Schedule</th>
                     <th>Status</th>
@@ -32,7 +31,7 @@
             <tbody>
                 <?php 
                 $i=1;
-                    $qry = $conn->query("SELECT b.*,p.title,concat(u.firstname,' ',u.lastname) as name FROM book_list b inner join `packages` p on p.id = b.package_id inner join users u on u.id = b.user_id order by date(b.date_created) desc ");
+                    $qry = $conn->query("SELECT b.*,p.title,concat(u.firstname,' ',u.lastname) as name FROM book_list b inner join `packages` p on p.id = b.package_id inner join users u on u.id = b.user_id WHERE b.status = 1  AND b.tourguide_id = 7 or b.status = 3  AND b.tourguide_id = 7 order by date(b.date_created) desc ");
                     while($row= $qry->fetch_assoc()):
                 ?>
                     <tr>
@@ -40,7 +39,6 @@
                         <td><?php echo $row['book_list_id'] ?></td>
                         <td><?php echo date("Y-m-d H:i",strtotime($row['date_created'])) ?></td>
                         <td><?php echo $row['name'] ?></td>
-                        <td><?php echo $row['book_pax'] ?></td>
                         <td><?php echo $row['title'] ?></td>
                         <td><?php echo date("Y-m-d",strtotime($row['schedule'])) ?></td>
                         <td class="text-center">
@@ -55,14 +53,12 @@
                             <?php endif; ?>
                         </td>
                         <td align="center">
-                                <button type="button" class="btn btn-flat btn-default btn-sm dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                                    Action
-                                <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <div class="dropdown-menu" role="menu">
+                                <button type="button" class="btn btn-flat btn-default btn-sm" data-toggle="dropdown">
                                 <a class="dropdown-item view_data" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>"><span class="fa fa-file text-primary"></span> View</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item delete_data" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>"><span class="fa fa-trash text-danger"></span> Delete</a>
+
+                                </button>
+                               
+                                <!-- <a class="dropdown-item delete_data" href="javascript:void(0)" data-id="<?php echo $row['id'] ?>"><span class="fa fa-trash text-danger"></span> Delete</a> -->
                                 </div>
                         </td>
                     </tr>
@@ -78,7 +74,7 @@
 			_conf("Are you sure to delete this booking permanently?","delete_booking",[$(this).attr('data-id')])
 		})
         $('.view_data').click(function(){
-            uni_modal("Booking Information","books/view.php?id="+$(this).attr('data-id'))
+            uni_modal("Booking Information","tg_booking/view.php?id="+$(this).attr('data-id'))
         })
 		$('.table').dataTable();
 	})

@@ -28,9 +28,20 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                 <input type="number" step="any" class="form form-control" name="cost" value="<?php echo isset($cost) ? $cost : 0; ?>">
 			</div>
             <div class="form-group">
+				<label for="cost" class="control-label">Pax Per Day:</label>
+                <input type="number" step="any" class="form form-control" name="pax" value="<?php echo isset($pax) ? $pax : 0; ?>">
+			</div>
+            
+            
+            <div class="form-group">
 				<label for="description" class="control-label">Description</label>
                 <textarea name="description" id="" cols="30" rows="2" class="form-control form no-resize summernote"><?php echo isset($description) ? $description : ''; ?></textarea>
 			</div>
+            <div class="form-group">
+				<label for="termsCondition" class="control-label">Terms and Condition</label>
+                <textarea name="termsCondition" id="termsCondition" cols="30" rows="2" class="form-control form no-resize summernote px-3"><?php echo isset($termsCondition) ? $termsCondition : ''; ?></textarea>
+			</div>
+
             <div class="form-group">
 				<label for="status" class="control-label">Status</label>
                 <select name="status" id="status" class="custom-select selevt">
@@ -45,28 +56,33 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
 	              <label class="custom-file-label" for="customFile">Choose file</label>
 	            </div>
 			</div>
-            <?php if(isset($upload_path) && is_dir(base_app.$upload_path)): ?>
-            <?php 
-            
-                $file= scandir(base_app.$upload_path);
-                foreach($file as $img):
-                    if(in_array($img,array('.','..')))
-                        continue;
-                    
-                
+            <?php if (isset($upload_path) && is_dir(base_app . $upload_path)): ?>
+            <?php
+            $files = scandir(base_app . $upload_path);
+            foreach ($files as $img):
+                if (in_array($img, array('.', '..'))) {
+                    continue;
+                }
+
+                // Check if the file name contains "archive=true"
+                if (strpos($img, "archived=true") === false):
             ?>
-                <div class="d-flex w-100 align-items-center img-item">
-                    <span><img src="<?php echo base_url.$upload_path.'/'.$img ?>" width="150px" height="100px" style="object-fit:cover;" class="img-thumbnail" alt=""></span>
-                    <span class="ml-4"><button class="btn btn-sm btn-default text-danger rem_img" type="button" data-path="<?php echo base_app.$upload_path.'/'.$img ?>"><i class="fa fa-trash"></i></button></span>
-                </div>
-            <?php endforeach; ?>
-            <?php endif; ?>
+                    <div class="d-flex w-100 align-items-center img-item">
+                        <span><img src="<?php echo base_url . $upload_path . '/' . $img ?>" width="150px" height="100px" style="object-fit:cover;" class="img-thumbnail" alt=""></span>
+                        <span class="ml-4"><button class="btn btn-sm btn-default text-secondary rem_img" type="button" data-path="<?php echo base_app . $upload_path . '/' . $img ?>"><i class="fa fa-archive"></i></button></span>
+                    </div>
+            <?php
+                endif;
+            endforeach;
+            ?>
+        <?php endif; ?>
+
 			
 		</form>
 	</div>
 	<div class="card-footer">
 		<button class="btn btn-flat btn-primary" form="package-form">Save</button>
-		<a class="btn btn-flat btn-default" href="?page=responses">Cancel</a>
+		<a class="btn btn-flat btn-default" href="?page=packages">Cancel</a>
 	</div>
 </div>
 <script>
@@ -98,10 +114,10 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
                     $('[data-path="'+$path+'"]').closest('.img-item').hide('slow',function(){
                         $('[data-path="'+$path+'"]').closest('.img-item').remove()
                     })
-                    alert_toast("Image Successfully Deleted","success");
+                    alert_toast("Image Successfully Archived","success");
                 }else{
                     console.log(resp)
-                    alert_toast("An error occured while deleting an Image","error");
+                    alert_toast("An error occured while archiving an Image","error");
                 }
                 end_loader()
             }
@@ -109,7 +125,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
     }
 	$(document).ready(function(){
 		$('.rem_img').click(function(){
-            _conf("Are sure to delete this image permanently?",'delete_img',["'"+$(this).attr('data-path')+"'"])
+            _conf("Are sure to archive this image?",'delete_img',["'"+$(this).attr('data-path')+"'"])
         })
 		$('#package-form').submit(function(e){
 			e.preventDefault();

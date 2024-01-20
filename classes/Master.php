@@ -65,21 +65,133 @@ Class Master extends DBConnection {
 		return json_encode($resp);
 	}
 
-	function delete_p_img(){
+	function save_tg(){
 		extract($_POST);
-		if(is_file($path)){
-			if(unlink($path)){
+		$data = "";
+		function generateTemporaryPassword() {
+			$characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz';
+		
+			$tempPass = "";
+		
+			for ($i = 0; $i < 8; $i++) {
+				$tempPass .= $characters[rand(0, strlen($characters) - 1)];
+			}
+		
+			return $tempPass;
+		}
+		
+		$password = generateTemporaryPassword();
+		$_POST['password'] = md5($password);
+		foreach($_POST as $k =>$v){
+				if(!empty($data)) $data .=",";
+					$data .= " `{$k}`='{$v}' ";
+		}
+
+		$check = $this->conn->query("SELECT * FROM `users` where username='{$username}' ")->num_rows;
+		if($check > 0){
+			$resp['status'] = 'failed';
+			$resp['msg'] = "Email already taken.";
+			return json_encode($resp);
+			exit;
+		}
+		$check = $this->conn->query("SELECT * FROM `users` where firstname='{$firstname}' AND lastname='{$lastname}'")->num_rows;
+		if($check > 0){
+			$resp['status'] = 'failed';
+			$resp['msg'] = "User already exists.";
+			return json_encode($resp);
+			exit;
+		}
+		$mail = new PHPMailer(true);
+		$qry = $this->conn->query("SELECT * from `users` where role = 'admin' ");
+		while($row = $qry->fetch_assoc()){
+			$adminEmail = $row['username'];
+		}
+		$mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+            $mail->Username = 'clydesolas01@gmail.com'; 
+            $mail->Password = 'qjjziqpmioubgtue'; 
+            
+                // Set the email content
+            $mail->setFrom('clydesolas01@gmail.com', 'CavSee');
+             $mail->addAddress($username, 'Recipient Name');
+             $mail->Subject = 'CavSee: Tour Guide Registration';
+             $mail->isHTML(true);
+             $mail->Body = '<html>
+             <body style="font-family: Arial, sans-serif;">
+             <h4> Good day! <br> This is your new account as a tour guide for CavSee. Please change your temporary password immediately to secure your account, thank you.
+			 .</h4>
+			 <ul>
+			 <li>Email: '.$_POST["username"].'</li>
+			 <li>Temporary Password: '.$password.'</li>
+			 </ul>
+             </body>
+             </html>';
+         
+              // Send the email
+           if($mail->send()){
+			$save = $this->conn->query("INSERT INTO `users` set $data ");
+			if($save){
+				foreach($_POST as $k =>$v){
+					$this->settings->set_userdata($k,$v);
+				}
+				$this->settings->set_userdata('id',$this->conn->insert_id);
 				$resp['status'] = 'success';
 			}else{
 				$resp['status'] = 'failed';
-				$resp['error'] = 'unlink file failed.';
+				$resp['error'] = $this->conn->error;
 			}
-		}else{
+		   }
+		   else{
 			$resp['status'] = 'failed';
-			$resp['error'] = 'unlink file failed. File do not exist.';
+			$resp['error'] = $this->conn->error;
+		}
+		return json_encode($resp);
+
+	}
+
+	function delete_p_img() {
+		extract($_POST);
+		
+		if (is_file($path)) {
+			$newPath = dirname($path) . '/archived=true' . basename($path);
+			
+			if (rename($path, $newPath)) {
+				$resp['status'] = 'success';
+			} else {
+				$resp['status'] = 'failed';
+				$resp['error'] = 'rename file failed.';
+			}
+		} else {
+			$resp['status'] = 'failed';
+			$resp['error'] = 'rename file failed. File does not exist.';
+		}
+	
+		return json_encode($resp);
+	}
+
+	function undodelete_p_img(){
+		extract($_POST);
+		if(is_file($path)){
+			$newPath = str_replace('archived=true', '', $path);
+			
+			// Check if renaming is successful
+			if(rename($path, $newPath)){
+				$resp['status'] = 'success';
+			} else {
+				$resp['status'] = 'failed';
+				$resp['error'] = 'Failed to rename the file.';
+			}
+		} else {
+			$resp['status'] = 'failed';
+			$resp['error'] = 'File does not exist.';
 		}
 		return json_encode($resp);
 	}
+	
+	
 	function delete_package(){
 		extract($_POST);
 		$del = $this->conn->query("DELETE FROM `packages` where id = '{$id}'");
@@ -224,6 +336,22 @@ Class Master extends DBConnection {
 		}
 			return json_encode($resp);
 	}
+
+	function update_tourguide_status(){
+		extract($_POST);
+		$update = $this->conn->query("UPDATE `users` set `status` = '{$status}' where id ='{$user_id}' ");
+		if($update){
+			$resp['status'] = 'success';
+			$this->settings->set_flashdata('success',"Tour guide is now {$status}.");
+		}else{
+			$resp['status'] = 'failed';
+			$resp['error'] = $this->conn->error;
+		}
+			return json_encode($resp);
+			exit;
+	}
+
+
 	function register(){
 		extract($_POST);
 		$data = "";
@@ -400,6 +528,29 @@ Class Master extends DBConnection {
 		}
 		return json_encode($resp);
 	}
+	function archive_tourguide(){
+		$del = $this->conn->query("UPDATE `users` set `status` = 'ARCHIVED' where id='{$_POST['id']}'");
+		if($del){
+			$resp['status'] = 'success';
+			$this->settings->set_flashdata("success","A tour guide has been archived.");
+		}else{
+			$resp['status'] = 'failed';
+			$resp['error'] = $this->conn->error;
+		}
+		return json_encode($resp);
+	}
+	function undoarchive_tourguide(){
+		$del = $this->conn->query("UPDATE `users` set `status` = 'ACTIVE' where id='{$_POST['id']}'");
+		if($del){
+			$resp['status'] = 'success';
+			$this->settings->set_flashdata("success","A tour guide has been unarchived.");
+		}else{
+			$resp['status'] = 'failed';
+			$resp['error'] = $this->conn->error;
+		}
+		return json_encode($resp);
+	}
+
 }
 
 $Master = new Master();
@@ -412,14 +563,26 @@ switch ($action) {
 	case 'delete_package':
 		echo $Master->delete_package();
 	break;
+	case 'undoarchive_tourguide':
+		echo $Master->undoarchive_tourguide();
+	break;
+	case 'archive_tourguide':
+		echo $Master->archive_tourguide();
+	break;
 	case 'delete_p_img':
 		echo $Master->delete_p_img();
+	break;
+	case 'undodelete_p_img':
+		echo $Master->undodelete_p_img();
 	break;
 	case 'book_tour':
 		echo $Master->book_tour();
 	break;
 	case 'update_book_status':
 		echo $Master->update_book_status();
+	break;
+	case 'update_tourguide_status':
+		echo $Master->update_tourguide_status();
 	break;
 	case 'register':
 		echo $Master->register();
@@ -435,6 +598,9 @@ switch ($action) {
 	break;
 	case 'rate_review':
 		echo $Master->rate_review();
+	break;
+	case 'save_tg':
+		echo $Master->save_tg();
 	break;
 	case 'update_review':
 		echo $Master->update_review();

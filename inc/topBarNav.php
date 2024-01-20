@@ -20,15 +20,15 @@ if ($row = $bookingCountResult->fetch_assoc()) {
 						<nav id="fh5co-menu-wrap" role="navigation">
 							<ul class="sf-menu" id="fh5co-primary-menu">
 								<li class="active">
-									<li><a href="home.php">Home</a></li>
+									<li><a href="index.php">Home</a></li>
                                  
                                   
-                                    <li class="active-menu"><a href="./home.php?page=packages"  >Packages</a></li>
-                                    <li><a href="./home.php?page=feedback">Review</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="./home.php?page=my_account">Booking List  <span class="badge badge-danger px-2 rounded" style="background-color: red !important;"><?php if($bookingCount>0){echo $bookingCount;} ?></span></a></li>
+                                    <li class="active-menu"><a href="./?page=packages"  >Packages</a></li>
+                                    <li><a href="./?page=feedback">Review</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="./?page=my_account">Booking List  <span class="badge badge-danger px-2 rounded" style="background-color: red !important;" id="bookingCountDisplay"></span></a></li>
 
                                     <?php if(isset($_SESSION['userdata'])): ?>
-                                    <li class="nav-item"><a class="nav-link" href="./home.php?page=edit_account"><i class="fa fa-user"></i> Hi, <?php  echo ucwords($_settings->userdata('firstname')) ?>!</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="./?page=edit_account"><i class="fa fa-user"></i> Hi, <?php  echo ucwords($_settings->userdata('firstname')) ?>!</a></li>
                                     <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fa fa-sign-out-alt"></i></a></li>
                                   <?php else: ?>
                                     <li class="nav-item"><a class="nav-link" href="javascript:void(0)" id="login_btn">Login</a></li>
@@ -42,9 +42,38 @@ if ($row = $bookingCountResult->fetch_assoc()) {
 			
 		</div>
 <script>
-  $(function(){
+ $(document).ready(function() {
+    function fetchBookingCount() {
+        $.ajax({
+            type: 'GET',
+            url: 'inc/getBookingCount.php', 
+            dataType: 'json',
+            success: function(response) {
+                // Handle the response
+                var bookingCount = response.count;
+                console.log('Booking Count:', bookingCount);
+
+                // Update the div with the booking count
+                $('#bookingCountDisplay').text(bookingCount);
+            },
+            error: function(error) {
+                console.error('Error fetching booking count:', error);
+            }
+        });
+    }
+
+    // Initial fetch on document ready
+    fetchBookingCount();
+
+    // Periodically fetch and update booking count (every 5 seconds in this example)
+    setInterval(fetchBookingCount, 2000); // Adjust the interval as needed
+});
+
+
+ $(function(){
     $('#login_btn').click(function(){
-      uni_modal("","login.php","large")
+      uni_modal("","login.php","large");
+ 
     })
     $('#navbarResponsive').on('show.bs.collapse', function () {
         $('#mainNav').addClass('navbar-shrink')

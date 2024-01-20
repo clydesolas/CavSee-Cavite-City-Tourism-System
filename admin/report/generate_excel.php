@@ -10,12 +10,19 @@ if (isset($_POST['excel'])) {
 
     // No need to concatenate the year as it is now handled in the new query
 
-    $sql = "SELECT b.*, p.title, CONCAT(u.firstname, ' ', u.lastname) as name 
-            FROM book_list b 
-            INNER JOIN `packages` p ON p.id = b.package_id 
-            INNER JOIN users u ON u.id = b.user_id 
-            WHERE b.schedule>= '$start_date' AND b.schedule<='$end_date' 
-            ORDER BY DATE(b.date_created) DESC";
+    $sql = "SELECT b.*, p.title, 
+    CONCAT(u.firstname, ' ', u.lastname) as name,
+    CONCAT(tg.firstname, ' ', tg.lastname) as tourguide_name
+    FROM book_list b 
+    INNER JOIN `packages` p ON p.id = b.package_id 
+    INNER JOIN users u ON u.id = b.user_id 
+    LEFT JOIN users tg ON tg.id = b.tourguide_id
+    WHERE b.schedule >= '$start_date' AND b.schedule <= '$end_date' 
+    ORDER BY DATE(b.date_created) DESC;
+    ";
+    if (!$sql) {
+        die('Error in query: ' . $conn->error);
+    }
 
     $result = $conn->query($sql);
 
@@ -24,7 +31,7 @@ if (isset($_POST['excel'])) {
     $sheet = $spreadsheet->getActiveSheet();
 
     // Add column headers
-    $columnHeaders = ['No.', 'ID','Date Created', 'User Name', 'Book Title', 'Schedule', 'Status'];
+    $columnHeaders = ['No.', 'ID','Date Created', 'User Name', 'Book Title', 'Schedule', 'Head Count','Visitor Types','Tour Guide Name','Status','Remark'];
     $sheet->fromArray($columnHeaders, NULL, 'A1');
     $headerStyle = $sheet->getStyle('A1:' . $sheet->getHighestColumn() . '1');
     $headerStyle->getFont()->setBold(true);
@@ -39,6 +46,9 @@ if (isset($_POST['excel'])) {
         $user_name = $row_data['name'];
         $book_title = $row_data['title'];
         $remark = $row_data['remark'];
+        $tourguide_name = $row_data['tourguide_name'];
+        $book_pax = $row_data['book_pax'];
+        $pax_type = $row_data['pax_type'];
         $book_list_id = $row_data['book_list_id'];
         $schedule = date("M j, Y", strtotime($row_data['schedule']));
         $status = getStatusLabel($row_data['status']); // Assuming you have a function to get status label
@@ -49,8 +59,11 @@ if (isset($_POST['excel'])) {
         $sheet->setCellValue('D' . $row, $user_name);
         $sheet->setCellValue('E' . $row, $book_title);
         $sheet->setCellValue('F' . $row, $schedule);
-        $sheet->setCellValue('G' . $row, $status);
-        $sheet->setCellValue('H' . $row, $remark);
+        $sheet->setCellValue('G' . $row, $book_pax);
+        $sheet->setCellValue('H' . $row, $pax_type);
+        $sheet->setCellValue('I' . $row, $tourguide_name);
+        $sheet->setCellValue('J' . $row, $status);
+        $sheet->setCellValue('K' . $row, $remark);
 
         $row++;
     }

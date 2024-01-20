@@ -13,14 +13,14 @@ if(!isset($_SESSION['userdata']) && !strpos($link, 'login.php')){
 	redirect('admin/login.php');
 }
 if(!isset($_SESSION['userdata'])){
-if(isset($_SESSION['userdata'])  &&  $_SESSION['userdata']['role'] == 'admin' && strpos($link, 'login.php')){
+if(isset($_SESSION['userdata'])  &&  $_SESSION['userdata']['role'] == 'admin' || isset($_SESSION['userdata'])  && $_SESSION['userdata']['role'] == 'tour_guide' && strpos($link, 'login.php')){
 	redirect('admin/index.php');
 }
-if(isset($_SESSION['userdata'])  &&  $_SESSION['userdata']['role'] != 'admin' && strpos($link, 'login.php')){
-	redirect('../home.php');
+if(isset($_SESSION['userdata'])  &&  $_SESSION['userdata']['role'] == 'user' && strpos($link, 'login.php')){
+	redirect('../index.php');
 }
 }
-$module = array('','admin','faculty','student');
+$module = array('','admin','tour_guide');
 if(isset($_SESSION['userdata']) && (strpos($link, 'index.php') || strpos($link, 'admin/')) && $_SESSION['userdata']['login_type'] !=  1){
 	echo "<script>alert('Access Denied!');location.replace('".base_url.$module[$_SESSION['userdata']['login_type']]."');</script>";
     exit;

@@ -45,7 +45,7 @@
                         <p class="card-text truncate"><?php echo $row['description'] ?></p>
                         <div class="w-100 d-flex justify-content-between">
                             <span class="rounded-0 btn btn-flat btn-sm btn-primary" style="color: white; background-color: black; border-color: black"><i class="fa fa-tag"></i> <?php echo number_format($row['cost']) ?></span>
-                            <a href="./home.php?page=view_package&id=<?php echo md5($row['id']) ?>" style="color: white; background-color: black; border-color: black" class="btn btn-sm btn-flat btn-warning">View Package <i class="fa fa-arrow-right"></i></a>
+                            <a href="./?page=view_package&id=<?php echo md5($row['id']) ?>" style="color: white; background-color: black; border-color: black" class="btn btn-sm btn-flat btn-warning">View Package <i class="fa fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>

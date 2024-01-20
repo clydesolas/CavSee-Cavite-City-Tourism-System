@@ -1,23 +1,11 @@
 <?php
 include '../../config.php';
 if(isset($_GET['id'])){
-    $qry = $conn->query("SELECT b.*, p.title, 
-                                concat(u.firstname,' ',u.lastname) as name, 
-                                concat(tg.firstname,' ',tg.lastname) as tourguide_name 
-                         FROM book_list b 
-                         INNER JOIN `packages` p ON p.id = b.package_id 
-                         INNER JOIN users u ON u.id = b.user_id 
-                         LEFT JOIN users tg ON tg.id = b.tourguide_id 
-                         WHERE b.id = '{$_GET['id']}'");
-
-    $result = $qry->fetch_assoc();
-
-    // Access data like $result['user_name'], $result['tour_guide_name'], etc.
-    foreach($result as $k => $v){
+    $qry = $conn->query("SELECT b.*, u.username as email, p.title,concat(u.firstname,' ',u.lastname) as name FROM book_list b inner join `packages` p on p.id = b.package_id inner join users u on u.id = b.user_id where b.id = '{$_GET['id']}' ");
+    foreach($qry->fetch_assoc() as $k => $v){
         $$k = $v;
     }
 }
-
 ?>
 <style>
     #uni_modal .modal-content>.modal-footer{
@@ -38,9 +26,7 @@ if(isset($_GET['id'])){
 
 <p><b>Package:</b> <?php echo $title ?></p>
 <p><b>User:</b> <?php echo $name ?></span></p>
-<p><b>Head Count:</b> <?php echo $book_pax ?></span></p>
-<p><b>Visitor type/s:</b> <?php echo $pax_type ?></span></p>
-<p><b>Tour Guide:</b> <?php echo $tourguide_name ?></span></p>
+<p><b>Email:</b> <?php echo $email ?></span></p>
 <p><b>Schedule:</b> <?php echo date("F d, Y",strtotime($schedule)) ?></p>
 <p><b>Remark:</b> <?php echo $remark ?></span></p>
 

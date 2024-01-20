@@ -5,10 +5,20 @@
 <?php endif;?>
 <div class="card card-outline card-primary">
 	<div class="card-header">
-		<h3 class="card-title">List of Packages</h3>
+	<div class="card-header">
+    <div class="btn-group" role="group" >
+            <button type="button" class="btn btn-dark  active disabled" >
+            <a href="./?page=packages/"  class="text-light" style="">  <i class="nav-icon fas fa-map"></i> Packages
+            </a>
+        </button>
+                <button type="button" class="btn btn-dark ">
+				<a href="./?page=packages/archive_images"  class="text-light" style=""> <i class="nav-icon fas fa-comment-alt"></i> Image Archive
+            </button>
+        </div>
 		<div class="card-tools">
-			<a href="?page=packages/manage" class="btn btn-flat btn-primary"><span class="fas fa-plus"></span>  Create New</a>
+		<a href="?page=packages/manage" class="btn btn-flat btn-primary"><span class="fas fa-plus"></span>  Create New</a>
 		</div>
+	</div>
 	</div>
 	<div class="card-body">
 		<div class="container-fluid">
@@ -18,7 +28,8 @@
 					<col width="5%">
 					<col width="15%">
 					<col width="20%">
-					<col width="35%">
+					<col width="10%">
+					<col width="25%">
 					<col width="10%">
 					<col width="15%">
 				</colgroup>
@@ -27,6 +38,7 @@
 						<th>#</th>
 						<th>Date Created</th>
 						<th>Package</th>
+						<th>Pax per Day</th>
 						<th>Description</th>
 						<th>Status</th>
 						<th>Action</th>
@@ -43,6 +55,7 @@
 							<td class="text-center"><?php echo $i++; ?></td>
 							<td><?php echo date("Y-m-d H:i",strtotime($row['date_created'])) ?></td>
 							<td><?php echo $row['title'] ?></td>
+							<td><?php echo $row['pax'] ?></td>
 							<td ><p class="truncate-1 m-0"><?php echo $row['description'] ?></p></td>
 							<td class="text-center">
                                 <?php if($row['status'] == 1): ?>

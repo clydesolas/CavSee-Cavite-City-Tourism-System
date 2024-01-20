@@ -6,6 +6,8 @@ if(isset($_GET['id'])){
             $$k = $v;
         }
     }
+
+    
 $review = $conn->query("SELECT r.*,concat(firstname,' ',lastname) as name FROM `rate_review` r inner join users u on r.user_id = u.id where r.package_id='{$id}' order by unix_timestamp(r.date_created) desc ");
 $review_count =$review->num_rows;
 $rate = 0;
@@ -24,7 +26,9 @@ if(is_dir(base_app.'uploads/package_'.$id)){
     foreach($ofile as $img){
         if(in_array($img,array('.','..')))
         continue;
+        if (strpos($img, "archived=true") === false):
         $files[] = validate_image('uploads/package_'.$id.'/'.$img);
+        endif;
     }
 }
 }
@@ -66,7 +70,7 @@ if(is_dir(base_app.'uploads/package_'.$id)){
                     <div class="w-100 d-flex justify-content-between">
                         <span class="rounded-0 btn-flat btn-sm btn-primary d-flex align-items-center  justify-content-between" style="color: white; background-color: black; border-color: black"><i class="fa fa-tag"></i> <span class="ml-1"><?php echo number_format($cost) ?></span></span>
                         <button class="btn btn-flat btn-warning" type="button" id="book" style="color: white; background-color: black; border-color: black">Book Now</button>
-                       <a href="./home.php?page=packages"> <button class="btn btn-flat btn-warning" type="button" id="book" style="color: white; background-color: black; border-color: black">Back</button></a>
+                       <a href="./?page=packages"> <button class="btn btn-flat btn-warning" type="button" id="book" style="color: white; background-color: black; border-color: black">Back</button></a>
                     </div>
                 </div>
             </div>
@@ -75,6 +79,12 @@ if(is_dir(base_app.'uploads/package_'.$id)){
                 <p class=''>Location: <?php echo $tour_location ?></p>
                 <h4 class="pt-0 my-0">Details</h4>
                 <div class="mb-0 pb-0"  style="line-height: 1 !important;"><?php echo stripslashes(html_entity_decode($description)) ?></div>
+                <div class="mb-0 pb-2"  style="line-height: 1 !important;">                <a class="text-dark" href="#" id="showTermsLink">View the Terms and Conditions</a>
+                </div>
+                <div class="terms-content" style="display: none;">
+                <div class="mb-0 pb-0"  style="line-height: 1 !important;"><?php echo stripslashes(html_entity_decode($termsCondition)) ?></div>
+
+                </div>
                 <div class="my-0 py-0">
                 <hr  >
                 <h5>Reviews (<?php echo count($feed) ?>)</h5>
@@ -99,6 +109,11 @@ if(is_dir(base_app.'uploads/package_'.$id)){
 </section>
 
 <script>
+     // Show/hide terms container
+   $('#showTermsLink').click(function (e) {
+            e.preventDefault();
+            $('.terms-content').slideToggle();
+        });
     $(function(){
         $('#book').click(function(){
             if("<?php echo $_settings->userdata('id') ?>" > 0)

@@ -6,7 +6,7 @@
 
         </div>
         <div>
-        <a href="./home.php?page=my_account" style="color: white; background-color: black; border-color: black" class="btn btn btn-primary btn-flat"><div class="fa fa-angle-left"></div> Back to Booking List</a>
+        <a href="./?page=my_account" style="color: white; background-color: black; border-color: black" class="btn btn btn-primary btn-flat"><div class="fa fa-angle-left"></div> Back to Booking List</a>
 
         </div>
     </div>

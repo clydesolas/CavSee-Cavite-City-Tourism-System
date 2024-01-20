@@ -7,7 +7,7 @@
         <h4><b>Review Bookings</b></h4>
         </div>
         <div>
-        <a href="./home.php?page=edit_account"  class="btn btn-dark" style=""><div class="fa fa-user-cog"></div>Manage Account</a>
+        <a href="./?page=edit_account"  class="btn btn-dark" style=""><div class="fa fa-user-cog"></div>Manage Account</a>
 
         </div>
     </div><br>

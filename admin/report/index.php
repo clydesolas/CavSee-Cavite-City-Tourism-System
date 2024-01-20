@@ -13,7 +13,6 @@
                 <a href="./?page=report/review_report"  class="text-light" style=""> <i class="nav-icon fas fa-comment-alt"></i> Rate & Review Report</a>
             </button>
         </div>
-        
 	</div>
     
     <div class="container p-4" >

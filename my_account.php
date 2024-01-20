@@ -7,34 +7,50 @@
         <h4><b>Booked Packages</b></h4>
         </div>
         <div>
-        <a href="./home.php?page=edit_account"  class="btn btn-dark" style=""><div class="fa fa-user-cog"></div>Manage Account</a>
+        <a href="./?page=edit_account"  class="btn btn-dark" style=""><div class="fa fa-user-cog"></div>Manage Account</a>
 
         </div>
     </div><br>
+    <div class="table-responsive">
         <table class="table table-stripped text-dark">
 
             <thead>
                 <tr>
                     <th>#</th>
                     <th>ID</th>
-                    <th>DateTime</th>
+                    <th><div style="width:100px">Date Created</div></th>
                     <th>Package</th>
                     <th>Schedule</th>
+                    <th>Tour Guide</th>
+                    <th><div style="width:100px">Head Count</div></th>
+                    <th>Visitor Types</th>
                     <th>Status</th>
-                    <th>Remark</th>
                     <th>Action</th>
+                    <th>Remark</th>
+
                 </tr>
             </thead>
             <tbody>
                 <?php 
                 $i=1;
-                $qry = $conn->query("SELECT b.*,p.title, b.id as bid FROM book_list b, packages p WHERE p.id = b.package_id AND b.user_id ='".$_settings->userdata('id')."'");
+                $qry = $conn->query("SELECT b.*, p.title, b.id as bid,
+                            concat(u.firstname,' ',u.lastname) as name, 
+                            concat(tg.firstname,' ',tg.lastname) as tourguide_name 
+                     FROM book_list b 
+                     INNER JOIN packages p ON p.id = b.package_id 
+                     INNER JOIN users u ON u.id = b.user_id 
+                     LEFT JOIN users tg ON tg.id = b.tourguide_id 
+                     WHERE b.user_id ='".$_settings->userdata('id')."'");
+                     if (!$qry) {
+                        die('Error in query: ' . $conn->error);
+                    }
                 while ($row = $qry->fetch_assoc()):
                     $review_exists = $conn->query("SELECT * FROM `rate_review` where book_list_id = '{$row['bid']}'")->num_rows;
                     $review_button_available = $review_exists;
                 ?>
                     <tr>
                         <td>
+                            <div style="width:50px">
                         <?php if($row['status'] == 0): ?>
                               <span class="badge badge-pill badge-danger rounded-circle text-danger m-1 p-1 py-0" style=" ">.</span>   
 
@@ -49,11 +65,17 @@
 
                             <?php endif; ?>
                         <?php echo $i++ ?>
+                        </div>
                     </td>
                         <td><?php echo $row['book_list_id'] ?></td>
                         <td><?php echo date("Y-m-d H:i",strtotime($row['date_created'])) ?></td>
-                        <td><?php echo $row['title'] ?></td>
-                        <td><?php echo date("Y-m-d",strtotime($row['schedule'])) ?></td>
+                        <td><div style="word-wrap: break-word;width:150px"><?php echo $row['title'] ?></div></td>
+                        <td><div style="word-wrap: break-word;width:100px"><?php echo date("Y-m-d",strtotime($row['schedule'])) ?></div></td>
+                        <td><div style="word-wrap: break-word;width:150px"><?php echo $row['tourguide_name'] ?></div></td>
+                        <td><?php echo $row['book_pax'] ?></td>
+                        <td><div style="word-wrap: break-word;width:100px"><?php echo $row['pax_type'] ?></div></td>
+
+
                         <td class="text-center">
                             <?php if($row['status'] == 0): ?>
                               <span class="badge badge-warning">Pending</span> 
@@ -68,7 +90,7 @@
                             <?php endif; ?>
                            
                         </td>
-                        <td><?php echo $row['remark'];?></td>
+                       
                         <td align="center">
                         <?php if ($row['status'] == 3 and $review_button_available === 0): ?>
                         <button type="button" class="btn btn-dark border btn-sm" data-toggle="modal" data-target="#reviewModal<?php echo $row['bid'] ?>">
@@ -81,6 +103,7 @@
                         </button>
                         <?php endif; ?>
                     </td>
+                    <td><div style="word-wrap: break-word;width:300px"><?php echo $row['remark'];?></div></td>
                     </tr>
                     <div class="modal fade" id="reviewModal<?php echo $row['bid'] ?>" tabindex="1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -94,6 +117,11 @@
                             <div class="modal-body">
                                 <form id="reviewForm<?php echo $row['bid'] ?>">
                                 <h1><?php echo $row['schedule'] ?></h1>
+                                <h1><?php echo $row['tourguide_name'] ?></h1>
+                                <h1><?php echo $row['book_pax'] ?></h1>
+                                <h1><?php echo $row['pax_type'] ?></h1>
+
+
                                 <!-- <input type="hidden" name="user_id" value=""> -->
                                 <input type="hidden" name="package_id" value="<?php echo $row['package_id'] ?>">
                                 <input type="hidden" name="book_list_id" value="<?php echo $row['bid'] ?>">
@@ -237,6 +265,7 @@ $(function () {
                 <?php endwhile; ?>
             </tbody>
         </table>
+    </div>
     </div>
 </section>
 

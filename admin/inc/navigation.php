@@ -3,6 +3,16 @@
     color:white;
   }
 </style>
+<?php
+$bookingCountQuery = "SELECT COUNT(*) as count FROM book_list WHERE status IN (0)";
+$bookingCountResult = $conn->query($bookingCountQuery);
+
+$bookingCount = 0;
+
+if ($row = $bookingCountResult->fetch_assoc()) {
+    $bookingCount = $row['count'];
+}
+?>
 <!-- Main Sidebar Container -->
       <aside class="main-sidebar sidebar-light-dark elevation-4 bg-primary text-white" style="background-color: #212529">
         <!-- Brand Logo -->
@@ -35,6 +45,7 @@
                         </p>
                       </a>
                     </li> 
+                    <?php if (isset($_SESSION['userdata']['user_role'] ) && $_SESSION['userdata']['user_role'] == 'admin') { ?>
                     <li class="nav-item dropdown">
                       <a href="<?php echo base_url ?>admin/?page=packages" class="nav-link nav-packages">
                         <i class="nav-icon fas fa-map-marked"></i>
@@ -43,30 +54,43 @@
                         </p>
                       </a>
                     </li>
+                    
                     <li class="nav-item dropdown">
                       <a href="<?php echo base_url ?>admin/?page=books" class="nav-link nav-books">
                         <i class="nav-icon fas fa-th-list"></i>
                         <p>
-                          Bookings
+                          Bookings <span class="badge badge-danger px-2 rounded"id="bookingCountDisplay" style="background-color: red !important;"></span>
                         </p>
                       </a>
                     </li>
+
+                    <li class="nav-item dropdown">
+                      <a href="<?php echo base_url ?>admin/?page=tg_list" class="nav-link nav-tourguide">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                          Tour Guide
+                        </p>
+                      </a>
+                    </li>
+
                     <li class="nav-item dropdown">
                       <a href="<?php echo base_url ?>admin/?page=inquiries" class="nav-link nav-inquiries">
                         <i class="nav-icon fas fa-question-circle"></i>
                         <p>
-                        Inquiries
+                        Inquiries <span class="badge badge-danger px-2 rounded"id="inquiryCountDisplay" style="background-color: red !important;"></span>
                         </p>
                       </a>
                     </li>
+
                     <li class="nav-item dropdown">
                       <a href="<?php echo base_url ?>admin/?page=review" class="nav-link nav-review">
                         <i class="nav-icon fas fa-comment-alt"></i>
                         <p>
-                        Rate & Reviews
+                        Rate & Reviews <span class="badge badge-danger px-2 rounded"id="rateCountDisplay" style="background-color: red !important;"></span>
                         </p>
                       </a>
                     </li>
+
                     <li class="nav-item dropdown">
                       <a href="<?php echo base_url ?>admin/?page=report" class="nav-link nav-report">
                       <i class="nav-icon fa fa-file" aria-hidden="true"></i>
@@ -84,7 +108,6 @@
                         </p>
                       </a>
                     </li>
-                    
                     <li class="nav-item dropdown">
                       <a href="<?php echo base_url ?>admin/?page=system_info" class="nav-link nav-system_info">
                         <i class="nav-icon fas fa-cogs"></i>
@@ -93,6 +116,18 @@
                         </p>
                       </a>
                     </li>
+                    <?php } ?> 
+                    <?php if (isset($_SESSION['userdata']['user_role'] ) && $_SESSION['userdata']['user_role'] == 'tour_guide') { ?>
+                    <li class="nav-item dropdown">
+                      <a href="<?php echo base_url ?>admin/?page=tg_booking" class="nav-link nav-books">
+                        <i class="nav-icon fas fa-th-list"></i>
+                        <p>
+                          Bookings  <span class="badge badge-danger px-2 rounded"id="bookingCountDisplaytg" style="background-color: red !important;"></span>
+                        </p>
+                      </a>
+                    </li>
+                    <?php } ?>
+                   
                   </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -113,7 +148,80 @@
         </div>
         <!-- /.sidebar -->
       </aside>
+
+      <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+
       <script>
+
+$(document).ready(function() {
+    // Function to fetch and update counts
+    function fetchCounts() {
+        // Fetch Booking Count
+        $.ajax({
+            type: 'GET',
+            url: 'inc/getBookingCount.php',
+            dataType: 'json',
+            success: function(response) {
+                var bookingCount = response.count;
+                console.log('Booking Count:', bookingCount);
+                $('#bookingCountDisplay').text(bookingCount);
+            },
+            error: function(error) {
+                console.error('Error fetching booking count:', error);
+            }
+        });
+
+        $.ajax({
+            type: 'GET',
+            url: 'inc/getBookingCounttg.php',
+            dataType: 'json',
+            success: function(response) {
+                var bookingCounttg = response.count;
+                console.log('Booking Count:', bookingCounttg);
+                $('#bookingCountDisplaytg').text(bookingCounttg);
+            },
+            error: function(error) {
+                console.error('Error fetching booking count:', error);
+            }
+        });
+        // Fetch Inquiry Count
+        $.ajax({
+            type: 'GET',
+            url: 'inc/getInquiryCount.php',
+            dataType: 'json',
+            success: function(response) {
+                var inquiryCount = response.count;
+                console.log('Inquiry Count:', inquiryCount);
+                $('#inquiryCountDisplay').text(inquiryCount);
+            },
+            error: function(error) {
+                console.error('Error fetching inquiry count:', error);
+            }
+        });
+
+        // Fetch Review Count
+        $.ajax({
+            type: 'GET',
+            url: 'inc/getReviewCount.php',
+            dataType: 'json',
+            success: function(response) {
+                var rateCount = response.count;
+                console.log('Review Count:', rateCount);
+                $('#rateCountDisplay').text(rateCount);
+            },
+            error: function(error) {
+                console.error('Error fetching review count:', error);
+            }
+        });
+    }
+
+    // Initial fetch on document ready
+    fetchCounts();
+
+    // Periodically fetch and update counts (every 2 seconds)
+    setInterval(fetchCounts, 2000);
+});
+
     $(document).ready(function(){
       var page = '<?php echo isset($_GET['page']) ? $_GET['page'] : 'home' ?>';
       var s = '<?php echo isset($_GET['s']) ? $_GET['s'] : '' ?>';

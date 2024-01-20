@@ -252,7 +252,7 @@
                     </div>
     				<p class="card-text truncate"><?php echo $row['description'] ?></p>
 					<div class="w-100 d-flex justify-content-end">
-						<a href="./home.php?page=view_package&id=<?php echo md5($row['id']) ?>" style="color: white; background-color: black; border-color: black"class="btn btn-sm btn-flat btn-warning">View Package <i class="fa fa-arrow-right"></i></a>
+						<a href="./?page=view_package&id=<?php echo md5($row['id']) ?>" style="color: white; background-color: black; border-color: black"class="btn btn-sm btn-flat btn-warning">View Package <i class="fa fa-arrow-right"></i></a>
 					</div>
 					</div>
 				</div>
@@ -260,7 +260,7 @@
 		<?php endwhile; ?>
 	</div>
 	<div class="d-flex w-100 justify-content-end">
-		<a href="./home.php?page=packages" class="btn btn-flat btn-warning mr-4" style="color: white; background-color: black; border-color: black">Explore Package <i class="fa fa-arrow-right"></i></a>
+		<a href="./?page=packages" class="btn btn-flat btn-warning mr-4" style="color: white; background-color: black; border-color: black">Explore Package <i class="fa fa-arrow-right"></i></a>
 	</div>
 	</div>
 </section>
@@ -473,7 +473,7 @@ $(function(){
 
 	<!-- Chatbot End -->
 
-	<script src="js/jquery.min.js"></script>
+	<!-- <script src="js/jquery.min.js"></script> -->
 	<script src="js/jquery.easing.1.3.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/jquery.waypoints.min.js"></script>

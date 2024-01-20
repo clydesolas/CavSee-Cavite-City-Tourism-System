@@ -3,10 +3,9 @@
 require_once('../config.php');
 
 // Check if the user is logged in and has the 'admin' role
-if (isset($_SESSION['userdata']['user_role'] ) && $_SESSION['userdata']['user_role'] !== 'admin') {
+if (isset($_SESSION['userdata']['user_role'] ) && $_SESSION['userdata']['user_role'] == 'user') {
   //  echo $_SESSION['userdata']['user_role'];
- header ('location: ../home.php');
-  
+ header ('location: ../index.php'); 
 }
 ?>
  <!DOCTYPE html>
