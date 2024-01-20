@@ -16,7 +16,7 @@ if(isset($_GET['id'])){
     }
 </style>
 <div class="modal-header p-0 m-0">
-                <h5 class="modal-title" id="reviewModalLabel">Review Form</h5>
+                <h5 class="modal-title" id="reviewModalLabel">Review Booking</h5>
                 <button type="button" class="close" id="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -26,38 +26,12 @@ if(isset($_GET['id'])){
 
 <p><b>Package:</b> <?php echo $title ?></p>
 <p><b>User:</b> <?php echo $name ?></span></p>
+<p><b>Head Count:</b> <?php echo $book_pax ?></span></p>
+<p><b>Visitor Type/s:</b> <?php echo $pax_type ?></span></p>
 <p><b>Email:</b> <?php echo $email ?></span></p>
 <p><b>Schedule:</b> <?php echo date("F d, Y",strtotime($schedule)) ?></p>
 <p><b>Remark:</b> <?php echo $remark ?></span></p>
 
-<form action="" id="book-status">
-    <input type="hidden" name="id" value="<?php echo $id ?>">
-    <input type="hidden" name="user_id" value="<?php echo $user_id ?>">
-    
-    <input type="hidden" name="schedule" value="<?php echo $schedule ?>">
-    <?php 
-    if($status == 0 || $status == 1){ ?>
-        <div class="form-group">
-        <label for="" class="control-label">Status</label>
-        <select name="status" id="status" class="select custom-select" required>
-            <option value="" selected disabled>Select..</option>
-            <option value="1" <?php echo $status == 1 ? "selected" : '' ?>>Confimed</option>
-            <option value="2" <?php echo $status == 2 ? "selected" : '' ?>>Cancelled</option>
-            <!-- <option value="3" <?php echo $status == 3 ? "selected" : '' ?>>Done</option> -->
-        </select>
-    </div>
-    
-    <div id="remark-container" class="form-group">
-        <label for="remark" class="control-label">Remark</label>
-        <textarea  name="remark" id="remark" class="form-control"></textarea>
-    </div>
-    <div class="modal-footer">
-    <button type="submit" class="btn btn-primary"  >Update</button>
-    <button type="clear" class="btn btn-secondary">Clear</button>
-    </div>
-    <?php }?>
-
-</form>
 </div>
 
 

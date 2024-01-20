@@ -30,7 +30,7 @@ if(isset($_GET['id']) && $_GET['id'] > 0){
             <input type="hidden" name="role" value="tour_guide">
             <div class="card-footer">
 		<button class="btn btn-flat btn-primary" type="submit">Submit</button>
-		<a class="btn btn-flat btn-default" href="?page=responses">Cancel</a>
+		<a class="btn btn-flat btn-default" href="?page=tg_list">Cancel</a>
 	</div>
 		</form>
 	</div>
