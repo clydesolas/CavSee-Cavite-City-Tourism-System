@@ -49,7 +49,7 @@
                     </div>
                     <div class="card-footer text-dark text-center">
                         <span class="fw-bold"><u>Charles Brian Carreon</u></span>
-                        Frontend Dev
+                        <br>  Frontend Dev
                         charles.carreon@gmail.com
                         09231231212
                     </div>
