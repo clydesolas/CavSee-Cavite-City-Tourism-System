@@ -24,10 +24,12 @@ if ($row = $bookingCountResult->fetch_assoc()) {
                                  
                                   
                                     <li class="active-menu"><a href="./?page=packages"  >Packages</a></li>
-                                    <li><a href="./?page=feedback">Review</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="./?page=my_account">Booking List  <span class="badge badge-danger px-2 rounded" style="background-color: red !important;" id="bookingCountDisplay"></span></a></li>
+                                    <li><a href="./?page=developer">Developer</a></li>
+                                    
 
                                     <?php if(isset($_SESSION['userdata'])): ?>
+                                      <li><a href="./?page=feedback">Review</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="./?page=my_account">Booking List  <span class="badge badge-danger px-2 rounded" style="background-color: red !important;" id="bookingCountDisplay"></span></a></li>
                                     <li class="nav-item"><a class="nav-link" href="./?page=edit_account"><i class="fa fa-user"></i> Hi, <?php  echo ucwords($_settings->userdata('firstname')) ?>!</a></li>
                                     <li class="nav-item"><a class="nav-link" href="logout.php"><i class="fa fa-sign-out-alt"></i></a></li>
                                   <?php else: ?>

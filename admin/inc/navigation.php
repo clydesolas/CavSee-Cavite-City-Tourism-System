@@ -127,7 +127,14 @@ if ($row = $bookingCountResult->fetch_assoc()) {
                       </a>
                     </li>
                     <?php } ?>
-                   
+                    <li class="nav-item dropdown">
+                      <a href="<?php echo base_url ?>admin/?page=developer" class="nav-link nav-developer">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                        Developers
+                        </p>
+                      </a>
+                    </li>
                   </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
